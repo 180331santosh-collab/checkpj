@@ -1,0 +1,127 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String          @id @default(cuid())
+  name          String?
+  email         String?         @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          String          @default("user")
+  accounts      Account[]
+  sessions      Session[]
+  favorites     Favorite[]
+  reviews       Review[]
+  profile       StudentProfile?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String? @db.Text
+  access_token       String? @db.Text
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String? @db.Text
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Country {
+  id                    String   @id @default(cuid())
+  name                  String   @unique
+  slug                  String   @unique
+  image                 String?
+  heroTitle             String
+  overview              String   @db.Text
+  requirementsByLevel   Json     // { "+2": "", "Bachelor": "", "Master": "", "PhD": "" }
+  docsChecklistByLevel  Json     // { "+2": [], "Bachelor": [], "Master": [], "PhD": [] }
+  scholarships          String   @db.Text
+  timeline              String   @db.Text
+  faqs                  Json     // [{ "q": "", "a": "" }]
+  featured              Boolean  @default(false)
+  favorites             Favorite[]
+  reviews               Review[]
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  countryId String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  country   Country  @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, countryId])
+}
+
+model StudentProfile {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  level           String?  // "+2", "Bachelor", "Master", "PhD"
+  gpaOrPercent    String?
+  backlogs        Int      @default(0)
+  englishTestType String?  // IELTS, TOEFL, PTE, "Haven't taken yet"
+  englishTestScore String? 
+  greScore        String? 
+  satScore        String?
+  budget          String?
+  targetCountries String[] // Array of strings (slugs)
+  fieldOfStudy    String?
+  intakeSeason    String?
+  workExperience  String?
+  projects        String?  @db.Text
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  message   String   @db.Text
+  createdAt DateTime @default(now())
+}
+
+model Review {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  countryId   String
+  country     Country  @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  category    String
+  content     String   @db.Text
+  isVerified  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
