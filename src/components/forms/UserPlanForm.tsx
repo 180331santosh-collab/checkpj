@@ -60,7 +60,7 @@ export default function UserPlanForm({ onOpenChange, onSuccess, initialData }: U
     const toggleCountry = (slug: string) => {
         setFormData(prev => {
             if (prev.targetCountries.includes(slug)) {
-                return { ...prev, targetCountries: prev.targetCountries.filter(c => c !== slug) };
+                return { ...prev, targetCountries: prev.targetCountries.filter((c: string) => c !== slug) };
             } else {
                 return { ...prev, targetCountries: [...prev.targetCountries, slug] };
             }
