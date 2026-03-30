@@ -109,10 +109,10 @@ export default function Navbar() {
                         </DropdownMenu>
                     ) : (
                         <div className="flex items-center gap-1 sm:gap-3 flex-nowrap">
-                            <Button variant="ghost" asChild className="rounded-full px-2 sm:px-6 text-xs sm:text-md cursor-pointer h-8 sm:h-10 shrink-0">
+                            <Button variant="ghost" asChild className="rounded-full px-2 sm:px-6 text-xs sm:text-base cursor-pointer h-8 sm:h-10 shrink-0">
                                 <Link href="/login">Login</Link>
                             </Button>
-                            <Button asChild className="rounded-full px-3 sm:px-8 bg-foreground text-background hover:bg-foreground/90 font-bold tracking-tight text-xs sm:text-md cursor-pointer h-8 sm:h-10 shrink-0">
+                            <Button asChild className="rounded-full px-3 sm:px-8 bg-foreground text-background hover:bg-foreground/90 font-bold tracking-tight text-xs sm:text-base cursor-pointer h-8 sm:h-10 shrink-0">
                                 <Link href="/signup">Sign Up</Link>
                             </Button>
                         </div>
